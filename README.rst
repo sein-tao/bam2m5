@@ -1,5 +1,5 @@
-bam2m5: Covert bam file to Pacbio
-====================================
+bam2m5: Covert bam file to Pacbio m5 format
+=============================================
 
 Description
 ---------------
