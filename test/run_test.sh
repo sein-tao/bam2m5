@@ -15,7 +15,7 @@ echo "faidx reference"
 samtools faidx ref.fasta
 
 echo "convert bam to m5"
-python ../bam2m5.py align.sort.md.bam ref.fasta -5,6,0,5 align.sort.md.bam.m5 
+python3 ../bam2m5.py align.sort.md.bam ref.fasta -5,6,0,5 align.sort.md.bam.m5 
 
 echo "compare..."
 sort -k 6,6 -k 8,8n -k 1,1 align.sort.md.bam.m5 > align.bam.sort.m5 

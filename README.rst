@@ -11,7 +11,7 @@ format for alignment. Here provides a converter from sam/bam format to m5.
 Usage
 -----------
 
-Usage: python3 bam2m5.py <in.bam> <ref.fa> <score_scheme> <out.m5>
+python3 bam2m5.py <in.bam> <ref.fa> <score_scheme> <out.m5>
 
 in.bam: input bam file
     - should be sorted by coordinate for effiency.
@@ -38,26 +38,35 @@ out.m5:
 
 example: python3 bam2m5.py align.sorted.bam ref.fa -5,6,0,5 align.sorted.m5
 
-see test/run_test.sh for converting pabcio sam to m5
+see test/run_test.sh for converting blasr sam to m5
 
 Dependency
 ------------
 
-Python3_:
+Python_ >= 3.0:
     this script is in python3, python2 support may be added later
 
 BioUtil_ >= 0.2:
-    handle bam file, fasta file reading
+    python package, handling bam file, fasta file reading
     use `pip3 install BioUtil` to install this pacakge.
+
+.. _Python: https://www.python.org/
+.. _BioUtil: https://github.com/sein-tao/pyBioUtil
+
+Install
+------------
+
+No installation is needed. 
+Just clone this project or download the tar ball, 
+unzip the file and run the program.
 
 Authors
 ----------
 
 Yu XU, xuyu@genomics.cn
 
-
 Lisense
 -----------
-These script is under GPL2 lisense
 
-"""
+These scripts are under GPL2 lisense.
+

@@ -42,8 +42,6 @@ class CIGAR:
                     ))
         return tuple(result)
 
-
-
 class cigartuple(tuple):
     @classmethod
     def from_str(cls, cigarstring):
@@ -85,11 +83,4 @@ class cigartuple(tuple):
             return CIGAR.length(self[-1])
         else:
             return 0
-
-
-
-
-
-
-
 
