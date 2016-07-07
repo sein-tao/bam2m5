@@ -2,4 +2,5 @@
 *~
 *.pyc
 __pycache__/
-test/*
+test/*.bam
+test/*.m5

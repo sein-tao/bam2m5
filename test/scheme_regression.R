@@ -1,0 +1,10 @@
+data = read.table("m5.score")
+dim(data)
+count = read.table("debug")
+dim(count)
+data = cbind(data, count)
+head(data)
+colnames(data) = c("score", "match", "diff", "inslen", "dellen", "insnum", "delnum")
+?lm
+lm( score ~ match + diff + inslen + dellen + insnum + delnum, data)
+savehistory("scheme_regression.R")
