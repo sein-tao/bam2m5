@@ -56,18 +56,20 @@ BioUtil_ >= 0.2:
     python package, handling bam file, fasta file reading. 
     Use ``pip3 install BioUtil`` to install this pacakge.
 
+cython_ >= 0.24 (optional):
+    used for speed up code, optional
+
 .. _Python: https://www.python.org/
 .. _BioUtil: https://github.com/sein-tao/pyBioUtil
+.. _cython: http://cython.org/
 
 Install
 ------------
 
-No installation is needed. You can:
-
-- clone this project, and run program.
-- download the zip file, unzip the file, and run program.
-
-run ``test/run_test.sh`` for test. (``blasr`` needed)
+1. download the file, unzip the file, into the dir
+2. if you want cython support (recomanded), run ``python3 cython_build.py`` 
+3. (optional) ``cd test; bash run_test.sh`` for test. (``blasr`` needed)
+4. Now you can invoke ``bam2m5.py`` for use.
 
 Authors
 ----------
