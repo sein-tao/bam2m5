@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# cython: profile=True
 """Convert bam file to pacbio m5 format
 Usage: python3 <script> <in.bam> <ref.fa> <score_scheme> <out.m5>
 
@@ -12,6 +13,8 @@ from __future__ import print_function
 nargs = 4
 from cigar import CIGAR, cigartuple
 from BioUtil import samFile, xzopen, cachedFasta
+
+from pysam.calignmentfile cimport AlignmentFile, AlignedSegment
 import warnings
 
 class mapScore:
@@ -43,7 +46,8 @@ def main(inbam, fasta_file, score, out_file):
 
 # m5 fileds
 # qName qLength qStart qEnd qStrand tName tLength tStart tEnd tStrand score numMatch numMismatch numIns numDel mapQV qAlignedSeq matchPattern tAlignedSeq
-def bam2m5(rec, fa, ref_lengths, score_scheme):
+cdef tuple bam2m5(AlignedSegment rec, object fa, dict ref_lengths, object score_scheme):
+    cdef str qseq, rseq
     if rec.is_unmapped:
         return None
     if rec.query_sequence is None :
@@ -104,23 +108,20 @@ def bam2m5(rec, fa, ref_lengths, score_scheme):
             qseq, mp, rseq,
             )
 
-complement = {'A': 'T', 'C': 'G', 'G': 'C', 'T': 'A',
+cdef dict complement = {
+        'A': 'T', 'C': 'G', 'G': 'C', 'T': 'A',
         'a': 't', 'c': 'g', 'g': 'c', 't': 'a'}
-def reverse_complement(seq):
+cdef str reverse_complement(str seq):
     return "".join(complement.get(base, base) for base in reversed(seq) )
 
-def match_pattern(qseq, rseq):
+cdef str match_pattern(str qseq, str rseq):
     return "".join('|' if q.upper() == r.upper() else '*' for q, r in zip(qseq, rseq))
 
-def insert(string, pos, seq):
+cdef str insert(str string, size_t pos, str seq):
     return string[:pos] + seq + string[pos:]
 
 if __name__ == '__main__':
     import sys
-    try:
-        from cbam2m5 import main
-    except ImportError:
-        pass
     if len(sys.argv) - 1 != nargs:
         sys.exit(__doc__)
     main(*sys.argv[1:])
