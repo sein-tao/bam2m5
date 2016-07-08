@@ -15,6 +15,7 @@ from cigar import CIGAR, cigartuple
 from BioUtil import samFile, xzopen, cachedFasta
 
 from pysam.calignmentfile cimport AlignmentFile, AlignedSegment
+# from libcpp.vector cimport vector
 import warnings
 
 class mapScore:
@@ -56,28 +57,8 @@ cdef tuple bam2m5(AlignedSegment rec, object fa, dict ref_lengths, object score_
         return None
     cigar = cigartuple(rec.cigartuples)
     qseq = rec.query_sequence[rec.query_alignment_start:rec.query_alignment_end]
-    # this function may contain some bugs, read direct from fa file instead
-    # rseq = rec.get_reference_sequence() 
     rseq = fa[rec.reference_name][rec.reference_start:rec.reference_end]
-
-    pos = 0
-    for op, length in cigar:
-        if op in (CIGAR.EQUAL, CIGAR.DIFF, CIGAR.MATCH):
-            pos += length
-        elif op == CIGAR.INS:
-            rseq = insert(rseq, pos, '-'*length)
-            pos += length
-        elif  op == CIGAR.DEL:
-            qseq = insert(qseq, pos, '-'*length)
-            pos += length
-        elif op in (CIGAR.SOFT_CLIP, CIGAR.HARD_CLIP):
-            continue
-        else:
-            warnings.warn("%s %s %s" %
-                    (rec.query_name, CIGAR.get_name(op)))
-    if (len(qseq) != len(rseq)):
-        warnings.warn("sequence length not match, maybe error: %s -> %s"
-                % (rec.query_name, rec.reference_name))
+    qseq, rseq = padding_seq(qseq, rseq, rec)
 
     if rec.is_reverse:
         qseq = reverse_complement(qseq)
@@ -107,6 +88,48 @@ cdef tuple bam2m5(AlignedSegment rec, object fa, dict ref_lengths, object score_
             rec.mapping_quality,
             qseq, mp, rseq,
             )
+
+
+cdef padding_seq(str qseq, str rseq, AlignedSegment rec):
+    cdef size_t qpos = 0
+    cdef size_t rpos = 0
+    cdef list qgap, rgap
+    qgap, rgap = list(), list() # gap positions and length
+    cdef size_t op, length
+    for op, length in rec.cigartuples:
+        if op in (CIGAR.EQUAL, CIGAR.DIFF, CIGAR.MATCH):
+            qpos += length
+            rpos += length
+        elif op == CIGAR.INS:
+            rgap.append((rpos, length))
+            qpos += length
+        elif  op == CIGAR.DEL:
+            qgap.append((qpos, length))
+            rpos += length
+        elif op in (CIGAR.SOFT_CLIP, CIGAR.HARD_CLIP):
+            continue
+        else:
+            warnings.warn("%s %s %s" %
+                    (rec.query_name, CIGAR.get_name(op)))
+    qseq = add_gap(qseq, qgap)
+    rseq = add_gap(rseq, rgap)
+    if (len(qseq) != len(rseq)):
+        warnings.warn("sequence length not match, maybe error: %s -> %s"
+                % (rec.query_name, rec.reference_name))
+    return qseq, rseq
+
+cdef str add_gap(str seq, list gaps):
+    cdef size_t pos = 0
+    cdef list frag = list()
+    cdef size_t start, length
+    for start, length in gaps:
+        frag.append(seq[pos:start])
+        frag.append('-' * length)
+        pos = start
+    else:
+        frag.append(seq[pos:])
+    return ''.join(frag)
+
 
 cdef dict complement = {
         'A': 'T', 'C': 'G', 'G': 'C', 'T': 'A',

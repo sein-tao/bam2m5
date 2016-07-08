@@ -9,7 +9,9 @@ if len(sys.argv) -1 == 0:
 
 extension = Extension("cbam2m5", ["cbam2m5.pyx",],
             include_dirs=pysam.get_include(),
-            extra_compile_args=["-w",])
+            extra_compile_args=["-w",],
+            # language='c++',
+            )
 setup(
         name = 'cbam2m5',
         ext_modules = cythonize(extension)

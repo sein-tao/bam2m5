@@ -9,3 +9,4 @@ test/*.bam
 test/*.m5
 test/*.fai
 test/*debug*
+perform.test/
