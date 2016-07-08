@@ -110,7 +110,7 @@ def reverse_complement(seq):
     return "".join(complement.get(base, base) for base in reversed(seq) )
 
 def match_pattern(qseq, rseq):
-    return "".join('|' if q.upper() == r.upper() else '*' for q, r in zip(qseq, rseq))
+    return "".join('|' if q == r else '*' for q, r in zip(qseq.upper(), rseq.upper()))
 
 def insert(string, pos, seq):
     return string[:pos] + seq + string[pos:]

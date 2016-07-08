@@ -115,7 +115,7 @@ cdef str reverse_complement(str seq):
     return "".join(complement.get(base, base) for base in reversed(seq) )
 
 cdef str match_pattern(str qseq, str rseq):
-    return "".join('|' if q.upper() == r.upper() else '*' for q, r in zip(qseq, rseq))
+    return "".join('|' if q == r else '*' for q, r in zip(qseq.upper(), rseq.upper()))
 
 cdef str insert(str string, size_t pos, str seq):
     return string[:pos] + seq + string[pos:]
