@@ -48,7 +48,7 @@ def bam2m5(rec, fa, ref_lengths, score_scheme):
         return None
     if rec.query_sequence is None :
         warnings.warn("%s -> %s is not parsed due to no query sequece" 
-                %(rec.query_name, req.reference_name) )
+                %(rec.query_name, rec.reference_name) )
         return None
     cigar = cigartuple(rec.cigartuples)
     qseq = rec.query_sequence[cigar.query_start:cigar.query_end]
@@ -78,7 +78,7 @@ def bam2m5(rec, fa, ref_lengths, score_scheme):
     if rec.is_reverse:
         qseq = reverse_complement(qseq)
         rseq = reverse_complement(rseq)
-    mp = "".join('|' if q == r else '*' for q, r in zip(qseq, rseq))
+    mp = "".join('|' if q.upper() == r.upper() else '*' for q, r in zip(qseq, rseq))
 
     cigar_len, cigar_count = rec.get_cigar_stats()
     if cigar_len[CIGAR.EQUAL] == 0 and cigar_len[CIGAR.MATCH] > 0:
@@ -104,7 +104,8 @@ def bam2m5(rec, fa, ref_lengths, score_scheme):
             qseq, mp, rseq,
             )
 
-complement = {'A': 'T', 'C': 'G', 'G': 'C', 'T': 'A'}
+complement = {'A': 'T', 'C': 'G', 'G': 'C', 'T': 'A',
+        'a': 't', 'c': 'g', 'g': 'c', 't': 'a'}
 def reverse_complement(seq):
     return "".join(complement.get(base, base) for base in reversed(seq) )
 
