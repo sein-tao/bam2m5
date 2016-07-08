@@ -4,12 +4,6 @@ set -e
 echo "generate bam using blasr"
 blasr -nproc 4 reads.fasta ref.fasta -bestn 1 -sam -clipping hard -minMatch 19 | samtools sort - align.sort 
 
-# echo "calc MD tag"
-# samtools calmd -b align.sort.bam ref.fasta > align.sort.md.bam 
-
-# echo "faidx reference"
-# samtools faidx ref.fasta
-
 echo "convert bam to m5"
 python3 ../bam2m5.py align.sort.bam ref.fasta -5,6,0,5 align.sort.bam.m5 
 
