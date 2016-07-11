@@ -33,21 +33,9 @@ class mapScore:
         score += self.gap_extend * (cigar_len[CIGAR.INS] + cigar_len[CIGAR.DEL])
         return int(score)
 
-def main(inbam, fasta_file, score, out_file):
-    fa = cachedFasta(fasta_file)
-    with samFile(inbam, 'r') as sam, xzopen(out_file,'w') as out:
-        ref_lengths = dict(zip(sam.references, sam.lengths))
-        match, mismatch, gap_open, gap_extend = map(float, score.split(','))
-        score_scheme = mapScore(mismatch, gap_open, gap_extend, match)
-        for rec in sam:
-            m5 = bam2m5(rec, fa, ref_lengths, score_scheme)
-            if m5 is not None:
-                print(*m5, file=out)
-    fa.close()
-
 # m5 fileds
 # qName qLength qStart qEnd qStrand tName tLength tStart tEnd tStrand score numMatch numMismatch numIns numDel mapQV qAlignedSeq matchPattern tAlignedSeq
-cdef tuple bam2m5(AlignedSegment rec, object fa, dict ref_lengths, object score_scheme):
+def bam2m5(AlignedSegment rec, object fa, dict ref_lengths, object score_scheme):
     cdef str qseq, rseq
     if rec.is_unmapped:
         return None
@@ -140,12 +128,5 @@ cdef str reverse_complement(str seq):
 cdef str match_pattern(str qseq, str rseq):
     return "".join('|' if q == r else '*' for q, r in zip(qseq.upper(), rseq.upper()))
 
-cdef str insert(str string, size_t pos, str seq):
-    return string[:pos] + seq + string[pos:]
 
-if __name__ == '__main__':
-    import sys
-    if len(sys.argv) - 1 != nargs:
-        sys.exit(__doc__)
-    main(*sys.argv[1:])
 
