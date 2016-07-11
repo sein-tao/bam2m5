@@ -5,7 +5,7 @@ echo "generate bam using blasr"
 blasr -nproc 4 reads.fasta ref.fasta -bestn 1 -sam -clipping hard -minMatch 19 | samtools sort - align.sort 
 
 echo "convert bam to m5"
-python3 ../bam2m5.py align.sort.bam ref.fasta -5,6,0,5 align.sort.bam.m5 
+python3 ../bam2m5.py align.sort.bam ref.fasta align.sort.bam.m5 
 
 echo "generate m5 using blasr as standard"
 blasr -nproc 4 reads.fasta ref.fasta -bestn 1 -m 5 -minMatch 19 > align.m5  

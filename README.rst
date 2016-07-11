@@ -13,7 +13,7 @@ m5 format.
 Usage
 -----------
 
-Usage: **python3 bam2m5.py <in.bam> <ref.fa> <score_scheme> <out.m5>**
+Usage: **python3 bam2m5.py <in.bam> <ref.fa> [--score <score_scheme>] <out.m5>**
 
 *in.bam*   
     input bam file, should be sorted by coordinate for efficiency.
