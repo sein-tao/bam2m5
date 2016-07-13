@@ -36,6 +36,7 @@ Usage: **python3 bam2m5.py <in.bam> <ref.fa> [--score <score_scheme>] <out.m5>**
         - ``blasr -m 5``: -5,6,0,5
         - ``bwa mem -x pacbio``: 1,-1,-1,-1
     - notice the different sign of scores for blasr and bwa
+    - the default value is -5,6,0,5, equivalent to ``blasr -m 5`` scheme
     - if the ``score`` filed in m5 file is used by downstream analysis, 
       one may choose use the ``blasr -m 5`` scheme to get compatibility with ``blasr -m 5`` result,
       no matter which score scheme is really used by the alignment software.
